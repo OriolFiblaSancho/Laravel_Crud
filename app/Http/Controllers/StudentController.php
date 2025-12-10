@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 use App\Models\Students;
 use App\Models\Courses;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 class StudentController extends Controller
 {
     public function index()
     {
-        $students = Students::latest()->paginate(5);
+        $students = Students::with('course')->paginate(5);
         return view('students.index', compact('students'));
     }
     public function create()
@@ -45,6 +46,36 @@ class StudentController extends Controller
         ]);
         $student->update($request->all());
         return redirect()->route('students.index')->with('success', 'Student updated successfully.');
+    }
+
+    public function export(): StreamedResponse
+    {
+        $students = Students::all();
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename=students.csv',
+        ];
+
+        return response()->stream(function() use ($students) {
+            $handle = fopen('php://output', 'w');
+            // Add BOM to fix UTF-8 in Excel
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+            // Header row
+            fputcsv($handle, ['ID', 'Name', 'Email', 'Course ID', 'Created At', 'Updated At']);
+            // Data rows
+            foreach ($students as $student) {
+                fputcsv($handle, [
+                    $student->id,
+                    $student->name,
+                    $student->email,
+                    $student->course_id,
+                    $student->created_at,
+                    $student->updated_at,
+                ]);
+            }
+            fclose($handle);
+        }, 200, $headers);
+
     }
     public function destroy(Students $student)
     {

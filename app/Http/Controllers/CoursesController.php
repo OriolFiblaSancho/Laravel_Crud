@@ -46,4 +46,24 @@ class CoursesController extends Controller
         $course->delete();
         return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
     }
+
+    public function export(): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $courses = Courses::all();
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename=courses.csv',
+        ];
+
+        return response()->stream(function() use ($courses) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['ID', 'Name', 'Created At', 'Updated At']);
+
+            foreach ($courses as $course) {
+                fputcsv($handle, [$course->id, $course->name, $course->created_at, $course->updated_at]);
+            }
+
+            fclose($handle);
+        }, 200, $headers);
+    }
 }
