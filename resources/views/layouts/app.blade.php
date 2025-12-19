@@ -15,7 +15,6 @@
             </div>
         </nav>
         @yield('content')  
-        <!-- ??? que es yield -->
     </div>
 </body>
 </html>
