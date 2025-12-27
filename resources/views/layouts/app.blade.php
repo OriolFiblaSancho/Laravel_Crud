@@ -10,9 +10,11 @@
     <div class="container mt-5">
         <nav id="header" class="navbar">
             <div class="d-flex w-100">
-                <a class="nav-link" href="{{ route('students.index') }}">Students</a>
-                <a class="nav-link px-5" href="{{ route('courses.index') }}">Courses</a>
+                <a class="nav-link" href="{{ route('students.index') }}"><b>Students</b></a>
+                <a class="nav-link px-5" href="{{ route('courses.index') }}"><b>Courses</b></a>
             </div>
+            <p>Token: {{ request()->cookie('api_token') ?? 'No disponible' }}</p>
+            <a href="{{ route('logout') }}"><b>Logout</b></a>
         </nav>
         @yield('content')  
     </div>

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 
-class AuthControllerApi extends Controller
+class AuthController extends Controller
 {
     public function login(Request $request)
     {
@@ -20,23 +20,30 @@ class AuthControllerApi extends Controller
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-
-        // Necessari perque sino IntelliSense no reconeixeria la variable $user
+        
+        // Sino poso esta linea, intelliPhense se queja
         /** @var \App\Models\User $user */
-
         $user = Auth::user();
         $token = $user->createToken('api-token')->plainTextToken;
 
-        $minutes = 60 * 24 * 7; 
-        $response = response()->json(['token' => $token], 200);
+        $minutes = 60 * 24 * 7; // 7 days
 
-        // Si no espera JSON, afegim el token a cookies i redirigim
-        if (! $request->expectsJson()) {
-            $secure = config('app.env') === 'production';
-            return redirect()->route('students.index')
-                ->cookie('api_token', $token, $minutes, '/', null, $secure, true, false, 'Lax');
+        return redirect()
+            ->route('students.index')
+            ->cookie('api_token', $token, $minutes, '/', null, false, false, false, 'Lax');
+    }
+
+    public function logout(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user) {
+            $user->tokens()->delete();
         }
+        Auth::logout();
 
-        return $response;
+        return redirect()
+            ->route('login')
+            ->cookie(Cookie::forget('api_token'));
     }
 }

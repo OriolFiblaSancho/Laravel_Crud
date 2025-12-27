@@ -4,7 +4,7 @@
 <div class="text-center">
     <h1 class="mb-3">Login</h1>
     <p class="mb-3">Please enter your credentials to log in.</p>
-    <form method="POST" action="{{ url('api/login') }}">
+    <form method="POST" action="{{ route('login') }}">
         @csrf
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>

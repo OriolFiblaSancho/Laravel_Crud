@@ -1,3 +1,6 @@
 Postman: https://app.getpostman.com/join-team?invite_code=ef4f0a44b040fcdd138fab4b77ae17b7efa6ee9dd2faab308e6236a42c6d751a&target_code=0e969fdfd02e88e0f1b98da59793b54f
 
-composer run dev
+composer install
+composer run dev // php artisan serve
+php artisan migrate
+php artisan db:seed

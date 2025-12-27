@@ -4,7 +4,7 @@
 <div class="d-flex justify-content-between mb-3">
     <h2>Course List</h2>
     <div>
-        <a class="btn btn-primary" href="{{ route('courses.create') }}">Create Student</a>
+        <a class="btn btn-primary" href="{{ route('courses.create') }}">Create Course</a>
         <a class="btn btn-success" href="{{ route('courses.export') }}">Export CSV </a>
     </div>
 </div>

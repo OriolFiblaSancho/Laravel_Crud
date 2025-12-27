@@ -3,10 +3,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CoursesControllerApi;
 use App\Http\Controllers\API\StudentControllerApi;
 
-Route::apiResource('api-courses', CoursesControllerApi::class)->middleware('auth:sanctum');
-Route::apiResource('api-students', StudentControllerApi::class)->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('api-courses', CoursesControllerApi::class);
+    Route::apiResource('api-students', StudentControllerApi::class);
+});
 
-Route::post('/login', [App\Http\Controllers\API\AuthControllerApi::class, 'login']);
+Route::get('/', function () {
+    return response()->json(['message' => 'API root', 'status' => 'ok']);
+});
 
 Route::fallback(function () {
     return response()->json(['message' => 'Endpoint not found'], 404);

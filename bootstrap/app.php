@@ -18,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'abilities' => CheckAbilities::class,
             'ability' => CheckForAnyAbility::class,
         ]);
+        // Esque sino no lo puc printear al app layout
+        $middleware->encryptCookies(except: ['api_token']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
